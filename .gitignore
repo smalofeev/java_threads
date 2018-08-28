@@ -1,10 +1,76 @@
-*.iml
-.gradle
-/local.properties
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
+# built application files
+*.apk
+*.ap_
+
+# files for the dex VM
+*.dex
+
+# Java class files
+*.class
+
+# generated files
+bin/
+gen/
+out/
+.project
+
+# Eclipse annotation processing tool generated files
+.apt_generated/
+
+# Local configuration file (sdk path, etc)
+local.properties
+# project.properties
+# please do not add project.properties to this file
+
+# Mac / Windows thumbnail db
 .DS_Store
-/build
-/captures
-.externalNativeBuild
+
+# Sandbox stuff
+_sandbox
+
+reports/
+
+# eclipse preferences stuff
+.settings/
+
+# output from tools run locally in developer's environments
+junit-report.xml
+findbugs_output.html
+findbugs_output.xml
+build
+.gradle
+
+# IDE idea folder
+.idea/workspace.xml
+.idea/libraries
+.idea/vcs.xml
+.idea/modules.xml
+.idea/gradle.xml
+.idea/codeStyleSettings.xml
+.idea/encodings.xml
+.idea/kotlinc.xml
+.idea/scopes/
+.idea/caches/
+
+app/jacoco.exec
+
+
+*.iml
+findbugs-idea.xml
+
+flagship_config
+
+# any android tools captures goes into this folder
+captures
+
+# airlock
+AirlockSettings.xml
+
+# generated json files in jenkins directory
+jenkins/lint.json
+jenkins/pmd.json
+jenkins/findbugs.json
+jenkins/authors.json
+jenkins/authors2.json
+jenkins/apk.json
+
