@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 
 class MainActivity : AppCompatActivity() {
 
@@ -34,16 +33,17 @@ class MainActivity : AppCompatActivity() {
                         text.text = "Please enter: ${charEvent.character}"
                     }
                 }
-                generator.start()
                 generator
             }
+
+            Thread(generator).start()
 
         }
 
         val quitBtn: Button = findViewById(R.id.quit_btn)
         quitBtn.setOnClickListener {
             synchronized(lock) {
-                generator?.interrupt()
+                generator?.setDone(true)
             }
 
             startBtn.isEnabled = true

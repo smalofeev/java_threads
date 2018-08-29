@@ -9,7 +9,7 @@ import java.util.Random;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 
-class RandomCharacterGenerator extends Thread implements CharacterSource {
+class RandomCharacterGenerator implements Runnable, CharacterSource {
     private static char[] chars;
     static {
         final String CHAR_ARRAY = "abcdefghijklmnopqrstuvwxyz0123456789";
@@ -18,17 +18,12 @@ class RandomCharacterGenerator extends Thread implements CharacterSource {
 
     private final Random random;
     private final CharacterEventHandler handler;
-
-//    private volatile boolean isDone = false;
+    private volatile boolean isDone = false;
 
     RandomCharacterGenerator() {
         this.random = new Random();
         this.handler = new CharacterEventHandler();
     }
-
-//    public void setDone() {
-//        this.isDone = true;
-//    }
 
     @Override
     public void addCharacterCallback(@NotNull Function1<? super CharacterEvent, Unit> callback) {
@@ -47,7 +42,7 @@ class RandomCharacterGenerator extends Thread implements CharacterSource {
 
     @Override
     public void run() {
-        while (!isInterrupted()) {
+        while (!isDone) {
             nextCharacter();
             try {
                 Thread.sleep(getPauseTime());
@@ -56,6 +51,10 @@ class RandomCharacterGenerator extends Thread implements CharacterSource {
                 return;
             }
         }
+    }
+
+    public void setDone(boolean done) {
+        isDone = done;
     }
 
     private int getPauseTime( ) {
