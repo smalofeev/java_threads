@@ -10,8 +10,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var text: TextView
     private val uiHandler = Handler()
-    private var generator: RandomCharacterGenerator? = null
-    private val lock = Any()
+    private lateinit var generator: RandomCharacterGenerator
     private lateinit var scoreManager: ScoreManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,34 +20,31 @@ class MainActivity : AppCompatActivity() {
         text = findViewById(R.id.text)
         scoreManager = ScoreManager(findViewById(R.id.score_tv))
 
+        generator = RandomCharacterGenerator()
+        generator.addCharacterCallback {
+            charEvent ->
+            uiHandler.post {
+                text.text = "Please enter: ${charEvent.character}"
+            }
+        }
+        scoreManager.resetGenerator(generator)
+        scoreManager.resetScore()
+
+
         val startBtn: Button = findViewById(R.id.start_btn)
         startBtn.setOnClickListener {
             startBtn.isEnabled = false
             startBtn.isClickable = false
             startBtn.isFocusable = false
 
-            generator = synchronized(lock) {
-                val generator = RandomCharacterGenerator()
-                generator.addCharacterCallback {
-                    charEvent ->
-                    uiHandler.post {
-                        text.text = "Please enter: ${charEvent.character}"
-                    }
-                }
-                scoreManager.resetGenerator(generator)
-                generator
-            }
+            generator.setDone(false)
             scoreManager.resetScore()
-
-            Thread(generator).start()
         }
 
         val quitBtn: Button = findViewById(R.id.quit_btn)
         quitBtn.setOnClickListener {
             scoreManager.clear()
-            synchronized(lock) {
-                generator?.setDone(true)
-            }
+            generator.setDone(true)
 
             startBtn.isEnabled = true
             startBtn.isClickable = true

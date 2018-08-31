@@ -18,7 +18,9 @@ class RandomCharacterGenerator implements Runnable, CharacterSource {
 
     private final Random random;
     private final CharacterEventHandler handler;
-    private volatile boolean isDone = false;
+    private boolean isDone = false;
+
+    private Thread generatorThread;
 
     RandomCharacterGenerator() {
         this.random = new Random();
@@ -41,20 +43,42 @@ class RandomCharacterGenerator implements Runnable, CharacterSource {
     }
 
     @Override
-    public void run() {
-        while (!isDone) {
-            nextCharacter();
+    public synchronized void run() {
+        while(true) {
             try {
-                Thread.sleep(getPauseTime());
+                if (isDone) {
+                    wait();
+                } else {
+                    nextCharacter();
+                    wait(getPauseTime());
+                }
             } catch (InterruptedException e) {
-                e.printStackTrace();
                 return;
             }
         }
+
+//        while (!isDone) {
+//            nextCharacter();
+//            try {
+//                Thread.sleep(getPauseTime());
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//                return;
+//            }
+//        }
     }
 
-    public void setDone(boolean done) {
+    public synchronized void setDone(boolean done) {
         isDone = done;
+
+        if (generatorThread == null) {
+            generatorThread = new Thread(this, "Generator");
+            generatorThread.start();
+        }
+
+        if (!isDone) {
+            notify();
+        }
     }
 
     private int getPauseTime( ) {
